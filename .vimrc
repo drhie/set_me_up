@@ -1,5 +1,9 @@
-" Add pathogen plugin support
-execute pathogen#infect()
+" Install plugins below with PlugInstall
+call plug#begin('~/.vim/plugged')
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug '/usr/local/opt/fzf'
+Plug 'junegunn/fzf.vim'
+call plug#end()
 
 " Allow file-type based indentation
 filetype plugin indent on
@@ -10,19 +14,22 @@ set nocompatible
 " ===============
 " BACKUP SETTINGS
 " ===============
+" Don't save swapfile
+set noswapfile
+
 " Keep a backup file (restore to previous version)
-set backup
+" set backup
 " Keep an undo file (undo changes after closing)
-set undofile
+" set undofile
 " Store all backup and swapfiles in its own directory
-set backupdir=~/swapfiles
-set undodir=~/swapfiles
-set dir=~/swapfiles
+" set backupdir=~/swapfiles
+" set undodir=~/swapfiles
+" set dir=~/swapfiles
 
 " ===============
 " EDITOR SETTINGS
 " ===============
-"Turn on syntax
+" Turn on syntax
 syntax on
 " Show the cursor position all the time
 set ruler
@@ -48,6 +55,16 @@ set hlsearch
 set history=50
 " Tabs always turn into spaces
 set tabstop=2 shiftwidth=2 expandtab
+" Copy paste across vim sessions"
+set clipboard=unnamed
+
+" fzf searching settings
+nmap <C-p> :GFiles<CR>
+nmap <C-o> :Buffers<CR>
+nmap <C-_> :Ag <CR>
+nmap <silent> <C-f> :Ag <C-R><C-W><CR>
+nmap <C-h> :History
+let g:fzf_layout = { 'down': '~20%' }
 
 " Don't use Ex mode, use Q for formatting
 map Q gq
@@ -107,6 +124,8 @@ set rtp+=~/.vim/bundle/Vundle.vim
 autocmd VimEnter * NERDTree
 " Set cursor to file if argument present
 autocmd VimEnter * if argc() | wincmd p | endif
+" Map NERDTree shortcut
+map <silent> <C-n> :NERDTreeFocus<CR>
 
 function! <SID>StripTrailingWhitespaces()
   " save last search & cursor position
