@@ -3,6 +3,16 @@ call plug#begin('~/.vim/plugged')
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'bling/vim-airline'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-rails'
+
+Plug 'leafgarland/typescript-vim'
+Plug 'yuezk/vim-js'
+Plug 'maxmellon/vim-jsx-pretty'
+
+Plug 'justinmk/vim-sneak'
 call plug#end()
 
 " Allow file-type based indentation
@@ -57,7 +67,16 @@ set history=50
 set tabstop=2 shiftwidth=2 expandtab
 " Copy paste across vim sessions"
 set clipboard=unnamed
+" Set end of line
+set eol
+" In many terminal emulators the mouse works just fine, thus enable it.
+if has('mouse')
+  set mouse=a
+endif
 
+" ========
+" MAPPINGS
+" ========
 " fzf searching settings
 nmap <C-p> :GFiles<CR>
 nmap <C-o> :Buffers<CR>
@@ -73,11 +92,12 @@ map Q gq
 " so that you can undo CTRL-U after inserting a line break.
 inoremap <C-U> <C-G>u<C-U>
 
-" In many terminal emulators the mouse works just fine, thus enable it.
-if has('mouse')
-  set mouse=a
-endif
+" Map NERDTree shortcut
+map <silent> <C-n> :NERDTreeFocus<CR>
 
+" Map resize
+map <silent> <C-l> :vertical resize +5<CR>
+map <silent> <C-k> :vertical resize -5<CR>
 
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
@@ -124,10 +144,12 @@ set rtp+=~/.vim/bundle/Vundle.vim
 autocmd VimEnter * NERDTree
 " Set cursor to file if argument present
 autocmd VimEnter * if argc() | wincmd p | endif
-" Map NERDTree shortcut
-map <silent> <C-n> :NERDTreeFocus<CR>
 
 function! <SID>StripTrailingWhitespaces()
+  let fts = ['txt', 'text']
+  if index(fts, &filetype) != -1
+    return
+  end
   " save last search & cursor position
   let _s=@/
   let l = line(".")
@@ -137,4 +159,4 @@ function! <SID>StripTrailingWhitespaces()
   call cursor(l, c)
 endfunction
 " Strip trailing whitespaces after save file
-autocmd BufWritePre * call <SID>StripTrailingWhitespaces()
+autocmd BufWritePre *.feature,*.py,*.rb,*.js,*.html,*.haml,*.ts,*.yml call <SID>StripTrailingWhitespaces()
