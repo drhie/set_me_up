@@ -154,6 +154,8 @@ packadd matchit
 autocmd VimEnter * NERDTree
 " Set cursor to file if argument present
 autocmd VimEnter * if argc() | wincmd p | endif
+" NERD Tree
+nnoremap <C-g> :NERDTreeToggle<CR>
 
 function! <SID>StripTrailingWhitespaces()
   let fts = ['txt', 'text']
