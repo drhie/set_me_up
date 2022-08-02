@@ -22,6 +22,8 @@ Plug 'maxmellon/vim-jsx-pretty'
 Plug 'peitalin/vim-jsx-typescript'
 
 Plug 'justinmk/vim-sneak'
+Plug 'ruanyl/vim-gh-line'
+
 call plug#end()
 
 " Allow file-type based indentation
