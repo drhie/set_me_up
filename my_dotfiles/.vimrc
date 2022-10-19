@@ -173,7 +173,7 @@ function! <SID>StripTrailingWhitespaces()
   call cursor(l, c)
 endfunction
 " Strip trailing whitespaces after save file
-autocmd BufWritePre *.feature,*.py,*.rb,*.js,*jsx,*.html,*.haml,*.ts,*tsx,*.yml call <SID>StripTrailingWhitespaces()"
+autocmd BufWritePre *.sass,*.scss,*.feature,*.py,*.rb,*.js,*jsx,*.html,*.haml,*.ts,*tsx,*.yml call <SID>StripTrailingWhitespaces()"
 
 " set filetypes as typescriptreact
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescriptreact
