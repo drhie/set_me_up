@@ -13,6 +13,8 @@ Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'bling/vim-airline'
 Plug 'tpope/vim-commentary'
+" Rails-aware navigation and tooling. Only activates inside Rails projects,
+" so it is inert outside of them. See: https://github.com/tpope/vim-rails
 Plug 'tpope/vim-rails'
 
 " Plug 'HerringtonDarkholme/yats.vim'
@@ -26,11 +28,11 @@ Plug 'ruanyl/vim-gh-line'
 
 call plug#end()
 
-" Allow file-type based indentation
-filetype plugin indent on
-
 " This must be first, because it changes other options as a side effect
 set nocompatible
+
+" Allow file-type based indentation
+filetype plugin indent on
 
 " ===============
 " BACKUP SETTINGS
@@ -96,7 +98,7 @@ nmap <C-p> :GFiles<CR>
 nmap <C-o> :Buffers<CR>
 nmap <C-_> :Ag <CR>
 nmap <silent> <C-f> :Ag <C-R><C-W><CR>
-nmap <C-h> :History
+nmap <C-h> :History<CR>            " omit <CR> to pre-fill and type a search term
 let g:fzf_layout = { 'down': '~20%' }
 
 " Don't use Ex mode, use Q for formatting
@@ -152,10 +154,11 @@ endif
 " compatible.
 packadd matchit
 
-" Add NERDTree
-autocmd VimEnter * NERDTree
+" Add NERDTree — open only when launched with no args or a directory argument,
+" not when editing a specific file or when vim is used as a git commit editor.
+autocmd VimEnter * if argc() == 0 || isdirectory(argv(0)) | NERDTree | endif
 " Set cursor to file if argument present
-autocmd VimEnter * if argc() | wincmd p | endif
+autocmd VimEnter * if argc() && !isdirectory(argv(0)) | wincmd p | endif
 " NERD Tree
 nnoremap <C-g> :NERDTreeToggle<CR>
 
