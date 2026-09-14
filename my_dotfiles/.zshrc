@@ -1,5 +1,5 @@
 # Set up rbenv
-export PATH="$HOME/.rbenv/shims:$PATH"
+export PATH="/opt/homebrew/bin:$PATH"
 eval "$(rbenv init -)"
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
@@ -101,7 +101,6 @@ source $ZSH/oh-my-zsh.sh
 export EDITOR='vim'
 
 # Frequently used paths
-export PATH="/opt/homebrew/bin:$PATH"
 export PROJ="/Users/$USER/Repositories"
 export DOTFILE_DIR="$PROJ/set_me_up/my_dotfiles"
 export SCRIPT_DIR="$PROJ/set_me_up/my_scripts"
