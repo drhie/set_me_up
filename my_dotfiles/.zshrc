@@ -81,7 +81,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git extract brew node npm)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -120,6 +120,9 @@ alias ohmyzsh="vim ~/.oh-my-zsh"
 alias zshsource="source ~/.zshrc"
 alias ls="ls -al"
 alias proj="cd $PROJ"
+# Map python to python3. Remove this if using a Python environment manager
+# (conda, pyenv, virtualenv) that manages the python symlink itself.
+alias python=python3
 
 # Import or export a dotfile (e.g., `dotfile import vim`)
 dotfile() {
@@ -135,3 +138,28 @@ dotfile() {
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Automatically switch Node version when entering a directory with an .nvmrc file.
+# Requires nvm to be installed. No-op if nvm is not available.
+if command -v nvm &>/dev/null; then
+  autoload -U add-zsh-hook
+  load-nvmrc() {
+    local node_version="$(nvm version)"
+    local nvmrc_path="$(nvm_find_nvmrc)"
+    if [ -n "$nvmrc_path" ]; then
+      local nvmrc_node_version="$(nvm version "$(cat "$nvmrc_path")")"
+      if [ "$nvmrc_node_version" = "N/A" ]; then
+        nvm install
+      elif [ "$nvmrc_node_version" != "$node_version" ]; then
+        nvm use
+      fi
+    fi
+  }
+  add-zsh-hook chpwd load-nvmrc
+  load-nvmrc
+fi
+
+# Machine-local overrides. Create ~/.zshrc.local to add settings that should
+# not be committed to the shared dotfiles repo (e.g. credentials, work-specific
+# paths, machine-specific aliases). Sourced last so it can override anything above.
+[ -f ~/.zshrc.local ] && source ~/.zshrc.local
