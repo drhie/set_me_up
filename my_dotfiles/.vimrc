@@ -7,7 +7,10 @@ endif
 
 " Install plugins below with PlugInstall
 call plug#begin('~/.vim/plugged')
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'scrooloose/nerdtree'
+autocmd VimEnter * if argc() == 0 || isdirectory(argv(0)) | NERDTree | endif
+autocmd VimEnter * if argc() && !isdirectory(argv(0)) | wincmd p | endif
+
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
@@ -87,8 +90,7 @@ if has('mouse')
   set mouse=a
 endif
 " Turn relative line numbers on
-:set relativenumber
-:set rnu
+set relativenumber
 
 " ========
 " MAPPINGS
@@ -154,6 +156,8 @@ endif
 " compatible.
 packadd matchit
 
+let NERDTreeShowHidden = 1
+
 " Add NERDTree — open only when launched with no args or a directory argument,
 " not when editing a specific file or when vim is used as a git commit editor.
 autocmd VimEnter * if argc() == 0 || isdirectory(argv(0)) | NERDTree | endif
@@ -176,7 +180,7 @@ function! <SID>StripTrailingWhitespaces()
   call cursor(l, c)
 endfunction
 " Strip trailing whitespaces after save file
-autocmd BufWritePre *.sass,*.scss,*.feature,*.py,*.rb,*.js,*jsx,*.html,*.haml,*.ts,*tsx,*.yml call <SID>StripTrailingWhitespaces()"
+autocmd BufWritePre *.sass,*.scss,*.feature,*.py,*.rb,*.js,*.jsx,*.html,*.haml,*.ts,*.tsx,*.yml call <SID>StripTrailingWhitespaces()
 
 " set filetypes as typescriptreact
 autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescriptreact
