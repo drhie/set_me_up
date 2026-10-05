@@ -162,3 +162,52 @@ fi
 # not be committed to the shared dotfiles repo (e.g. credentials, work-specific
 # paths, machine-specific aliases). Sourced last so it can override anything above.
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
+
+# Save PR data to local remote"
+save-pr() {
+  local PR="$1"
+  local REPO
+  REPO=$(gh repo view --json nameWithOwner --jq '.nameWithOwner')
+
+  {
+    echo "# Pull Request #$PR"
+    echo
+    echo "## PR Metadata"
+    echo
+    gh pr view "$PR" --json title,author,url,baseRefName,headRefName,state \
+      --jq '"- **Title:** \(.title)\n- **Author:** \(.author.login)\n- **URL:** \(.url)\n- **Base:** \(.baseRefName)\n- **Head:** \(.headRefName)\n- **State:** \(.state)"'
+
+    echo
+    echo "## Description"
+    echo
+    gh pr view "$PR" --json body --jq '.body'
+
+    echo
+    echo "## Discussion"
+    echo
+    gh api --paginate "repos/$REPO/issues/$PR/comments" \
+      --jq '.[] | "**\(.user.login)** (\(.created_at)):\n\n\(.body)\n"'
+
+    echo
+    echo "## Reviews"
+    echo
+    gh api --paginate "repos/$REPO/pulls/$PR/reviews" \
+      --jq '.[] | "### \(.user.login) - \(.state) (\(.submitted_at // "pending"))\n\n\(.body)\n"'
+
+    echo
+    echo "## Inline Review Comments"
+    echo
+    gh api --paginate "repos/$REPO/pulls/$PR/comments" \
+      --jq '.[] | "### \(.user.login) - \(.path):\(.line // .original_line)\n\n\(.body)\n"'
+
+    echo
+    echo "## Diff"
+    echo
+    echo '```diff'
+    gh pr diff "$PR"
+    echo '```'
+  } > ".prs/PR-$PR.md"
+
+  echo "Saved PR #$PR to .prs/PR-$PR.md"
+}
+
